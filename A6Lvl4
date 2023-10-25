@@ -1,0 +1,151 @@
+/*Miguel Plante - 200577678
+Title:Experiment #006 - RGB Fade
+Description: This program will fade the Red, Green, Blue(RGB) LED Instructions: The
+RGB LED is connected to a Pulse Width Modulation(PWM) pin.
+You can use analogWrite to control brightness.
+*/
+int RGBRedPin = 9; //The red RGB LED is connected pin 9 of the Arduino.
+int RGBGreenPin = 11; //The green RGB LED is connected pin 10 of the Arduino.
+int RGBBluePin = 10; //The blue RGB LED is connected pin 11 of the Arduino.
+int fadeDelay = 5; //This is the number of milliseconds that it will take between steps
+int data;
+int button1 = 2;
+int rotationPin = A0;
+int redValue=0;
+int greenValue=0;
+int blueValue=0;
+int flag = 0; 
+int first;
+int second;
+int third;
+int inputValue;
+int sum;
+//---------------------------------------------
+int test0;
+int test1;
+int test2;
+int flag2 = 1;
+int flag3 = 0;
+int count =0;
+int values[100];
+int testValue;
+int testSum;
+bool validationA, validationB, validationC, validationLength, validationChar;
+bool masterValidate = false;
+int validationFlagSizeOfArray = 0;
+String peanut;
+char a;
+char b;
+char c;
+
+
+void setup()
+{
+  Serial.begin(9600);
+  pinMode(button1, INPUT);
+  pinMode(RGBRedPin, OUTPUT); //Setup red RGB LED pin as an output pin.
+  pinMode(RGBGreenPin, OUTPUT); //Setup green RGB LED pin as an output pin.
+  pinMode(RGBBluePin, OUTPUT); //Setup blue RGB LED pin as an output pin.
+  pinMode(rotationPin, INPUT);
+}
+
+void loop()
+{
+  data = analogRead(rotationPin);
+  data = map(data, 0, 1023, 0, 255);
+  
+  if(masterValidate == false)//================BEGINNING
+  {
+    
+  Serial.println("Please enter RGB sequence: ");//Initial prompt
+  
+  while(Serial.available() == 0){}//wait for input
+  
+  if(Serial.available() > 0)//Input detected
+  {
+    peanut = Serial.readString();//Store input value to String
+    Serial.print("You entered: ");
+ 	Serial.println(peanut);
+    
+    a = peanut.charAt(0);//Store string chars as values
+    b = peanut.charAt(1);
+    c = peanut.charAt(2);
+    
+    //VALIDATE RIGHT CHARS
+    if((a+b+c) != 219)
+    {
+      Serial.println("Garbage, try again loser.");
+      validationChar = false;
+    }
+    
+    else
+    {
+      validationChar = true;
+    }
+    
+    //VALIDATE LENGTH
+    if(peanut.length() != 3)
+    {
+      Serial.println("String Wrong size, try again:");
+      validationLength = false;
+    }
+    
+    else
+    {
+      validationLength = true;
+    }
+    
+    //VALIDATE CHARS
+    if(a != 'R' && a != 'G' && a != 'B')
+    {
+      Serial.println("First char needs to be either RGB");
+      validationA = false;
+    }
+    
+    else
+    {
+      validationA = true;
+    }
+    
+    if(b != 'R' && b != 'G' && b != 'B')
+    {
+      Serial.println("Second char needs to be either RGB");
+      validationB = false;
+    }
+    
+    else
+    {
+      validationB = true;
+    }
+    
+    if(c != 'R' && c != 'G' && c != 'B')
+    {
+      Serial.println("Third char needs to be either RGB");
+      validationC = false;
+    }
+    
+    else
+    {
+      validationC = true;
+    }
+    
+    //VALIDATION CHECK FOR FLAG
+    if (validationA == true && validationB==true && validationC==true && validationLength==true && validationChar==true)
+    {
+      Serial.println("It worked!");
+      masterValidate = true;
+    }
+    
+    else
+    {
+      masterValidate = false;
+    }
+  }
+  }//--------END OF MASTER VALIDATE INITIAL
+    
+  //GO INTO PROGRAM
+  if (masterValidate == true)
+  {
+    setColor(peanut.charAt(count));
+  }  
+}
